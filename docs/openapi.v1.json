@@ -1,0 +1,5854 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SmartRouting API",
+    "description": "API der SmartRouting-Software zur Planung von Sammeltouren.",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Accounts": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Erstellt einen neuen Nutzer-Account.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Der neu erstellte Account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Anfrage.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Fehlende Rechte.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Benutzername existiert bereits.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Zeigt eine (paginierte) Liste aller Benutzerkonten an.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}": {
+      "put": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Bearbeitet einen bestehenden Nutzer-Account.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditAccountRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditAccountRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Der aktualisierte Account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Löscht den Nutzer-Account mit der angegebenen ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Zeigt die Details eines bestimmten Benutzers an.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/me": {
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Löscht den aktuellen Nutzer-Account (Passwort-Bestätigung erforderlich).",
+        "parameters": [
+          {
+            "name": "currentPassword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Zeigt das Profil des aktuellen Benutzers an.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Bearbeitet die eigenen Stammdaten (Name und E-Mail-Adresse).",
+        "description": "<br>\r\n            Dieser Endpunkt ändert <b>ausschließlich</b> Stammdaten. Rechte und der Aktivierungsstatus\r\n            sind bewusst nicht enthalten: Es handelt sich um den einzigen Schreibzugriff, den ein\r\n            beliebiger angemeldeter Nutzer auf sein eigenes Konto hat, und ein Konto darf sich niemals\r\n            selbst erweitern.\r\n            \r\n<br>\r\n            Die Vorversion nahm hier ein vollständiges `EditAccountRequest` an und übernahm daraus\r\n            `AdministrativeRights`. Die vorgeschaltete Prüfung verglich die Rechte des Aufrufers mit\r\n            den Rechten <em>des eigenen Kontos</em> – also einen Wert mit sich selbst – und konnte damit\r\n            nie greifen. Jeder angemeldete Nutzer konnte sich auf diesem Weg\r\n            SmartRoutingAPI.Models.Accounts.AdministrativeRights.Administrate zuweisen. Rechteänderungen laufen daher\r\n            jetzt ausnahmslos über die Endpunkte unter `/api/Accounts/{id}/rights/…`, die\r\n            SmartRoutingAPI.Models.Accounts.AdministrativeRights.EditUsers erfordern.\r\n            ",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditOwnProfileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditOwnProfileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditOwnProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Profil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Kein gültiges Token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Das eigene Konto existiert nicht mehr.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/changePassword": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Ändert das Passwort des Nutzer-Accounts mit der angegebenen ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/activate": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Aktiviert einen Benutzer-Account.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/deactivate": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Deaktiviert einen Benutzer-Account.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/activity": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Zeigt das Aktivitätsprotokoll eines Benutzers an.",
+        "description": "Noch nicht umgesetzt: Es existiert keine Protokolltabelle. Der Endpunkt liefert bewusst\r\n`501` statt einer leeren Liste, weil eine leere Liste \"keine Aktivität\" bedeutet und\r\ndamit eine Aussage träfe, die das System nicht belegen kann.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Nicht implementiert."
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/permissions": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Überprüft die Rechte eines Benutzers.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/bulk": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Erstellt mehrere Nutzer-Accounts gleichzeitig.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateAccountRequest"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateAccountRequest"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateAccountRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkCreateResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Löscht mehrere Benutzer-Accounts gleichzeitig.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkOperationResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/bulk/activate": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Aktiviert mehrere Benutzer-Accounts gleichzeitig.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkOperationResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/bulk/deactivate": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Deaktiviert mehrere Benutzer-Accounts gleichzeitig.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkOperationResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/search": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Sucht Benutzer nach verschiedenen Kriterien (paginiert).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "administrativeRights",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/AdministrativeRights"
+            }
+          },
+          {
+            "name": "applicationRights",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ApplicationRights"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/filter/administrative/{right}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Filtert Benutzer nach administrativen Rechten (paginiert).",
+        "parameters": [
+          {
+            "name": "right",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/AdministrativeRights"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/filter/application/{right}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Filtert Benutzer nach Anwendungsrechten (paginiert).",
+        "parameters": [
+          {
+            "name": "right",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ApplicationRights"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/statistics": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Gibt Statistiken über Benutzer zurück.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserStatisticsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/rights/administrative/grant": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Gewährt einem Benutzer ein administratives Recht.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "right",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/AdministrativeRights"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Konto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Der Aufrufer besitzt das Recht selbst nicht.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/rights/administrative/revoke": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Entzieht einem Benutzer ein administratives Recht.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "right",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/AdministrativeRights"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Konto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Der Aufrufer darf dieses Konto nicht bearbeiten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/rights/application/grant": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Gewährt einem Benutzer ein Anwendungsrecht.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "right",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ApplicationRights"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Konto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Der Aufrufer besitzt das Recht selbst nicht.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Accounts/{id}/rights/application/revoke": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Entzieht einem Benutzer ein Anwendungsrecht.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "right",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ApplicationRights"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Konto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Der Aufrufer darf dieses Konto nicht bearbeiten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryDestinations": {
+      "get": {
+        "tags": [
+          "DeliveryDestinations"
+        ],
+        "summary": "Ruft alle Abladestellen ab (paginiert).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von Abladestellen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDestinationResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DeliveryDestinations"
+        ],
+        "summary": "Erstellt eine neue Abladestelle.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Die neu erstellte Abladestelle.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDestinationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryDestinations/{id}": {
+      "get": {
+        "tags": [
+          "DeliveryDestinations"
+        ],
+        "summary": "Ruft eine spezifische Abladestelle anhand ihrer ID ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Die angeforderte Abladestelle.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDestinationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DeliveryDestinations"
+        ],
+        "summary": "Aktualisiert eine bestehende Abladestelle.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDestinationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Die aktualisierte Abladestelle.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDestinationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DeliveryDestinations"
+        ],
+        "summary": "Löscht eine Abladestelle.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Jobs": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Ruft alle Sammelpunkte ab (paginiert).",
+        "description": "<b>Wichtig für Fremdsysteme:</b> Die Antwort ist eine Seiten-Hülle\r\n            (`{ items, page, pageSize, totalCount, totalPages, hasNextPage, hasPreviousPage }`) und\r\n            <b>kein</b> Array. Die Vorgabe für `pageSize` ist 50, das Maximum 200. Ein Importeur muss\r\n            über alle Seiten laufen; andernfalls sieht er nur die ersten 50 Sammelpunkte.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von Sammelpunkten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Erstellt einen neuen Sammelpunkt.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Der neu erstellte Sammelpunkt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten (z. B. unbekannte Skill-ID).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Jobs/by-external-reference/{externalReference}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Sucht einen Sammelpunkt über seine externe Kennung.",
+        "description": "<br>\r\n            Dieser Endpunkt existiert für Fremdsysteme, die ihre eigenen Kennungen abgleichen. Bisher\r\n            musste ein Importeur dafür <em>alle</em> Sammelpunkte laden und im Speicher suchen – bei\r\n            gleichzeitig paginierter Liste ein Verfahren, das mit wachsendem Bestand zwangsläufig\r\n            unvollständig wird.\r\n            \r\n<br>\r\n            Die externe Kennung ist nicht als eindeutig erzwungen; gibt es mehrere Treffer, wird der\r\n            mit der kleinsten ID geliefert.\r\n            ",
+        "parameters": [
+          {
+            "name": "externalReference",
+            "in": "path",
+            "description": "Die zu suchende externe Kennung.",
+            "required": true,
+            "schema": {
+              "maxLength": 512,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Der gefundene Sammelpunkt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Keine Entsprechung.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Jobs/{id}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Ruft einen spezifischen Sammelpunkt anhand seiner ID ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Der angeforderte Sammelpunkt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Aktualisiert einen bestehenden Sammelpunkt.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Der aktualisierte Sammelpunkt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Löscht einen Sammelpunkt.",
+        "description": "Halte bereits gefahrener Routen bleiben erhalten; ihr Verweis auf diesen Sammelpunkt wird\r\nauf `null` gesetzt. Eine Route ist ein Nachweis und darf nicht rückwirkend\r\nverschwinden, wenn ein Container aus den Stammdaten entfernt wird.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Authentifiziert einen Benutzer und gibt ein JWT zurück.",
+        "description": "Der JWT ist für die Verwendung der restlichen API-Endpunkte erforderlich. Unerwartete Fehler\r\nwerden vom globalen Fehler-Handler als `500 ProblemDetails` behandelt (keine Stacktraces mehr).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JWT bei erfolgreicher Authentifizierung.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige oder unvollständige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Interner Serverfehler (z. B. fehlende JWT-Konfiguration)."
+          }
+        }
+      }
+    },
+    "/api/MapMatching/match": {
+      "post": {
+        "tags": [
+          "MapMatching"
+        ],
+        "summary": "Gleicht eine GPS-Spur live auf das Straßennetz ab und liefert die gesnappten Punkte.",
+        "description": "Nutzt Valhalla-Meili (`trace_attributes`). Für jeden Eingabepunkt wird der zugehörige,\r\nauf die Straße gesnappte Punkt zurückgegeben (1:1-Zuordnung), zusätzlich die gesnappte\r\nGesamtgeometrie als Encoded Polyline. Optional können Kantenattribute (Straßennamen, Tempo,\r\nStraßenklasse) sowie die dekodierte Geometrie angefordert werden.\r\n            \r\nEmpfehlung für echte GPS-Daten: `shapeMatch = map_snap` (Standard) verwenden und – falls\r\nvorhanden – pro Punkt einen Zeitstempel (`time`) mitliefern.",
+        "requestBody": {
+          "description": "Die zu matchende GPS-Spur samt Optionen.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Map-Matching erfolgreich.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapMatchResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabe (z. B. zu wenige oder ungültige Punkte).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Zugriff verweigert (fehlende Berechtigung).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Die Spur konnte nicht auf das Straßennetz abgeglichen werden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Die Valhalla-Instanz ist nicht erreichbar oder antwortete fehlerhaft."
+          },
+          "504": {
+            "description": "Zeitüberschreitung bei der Anfrage an die Valhalla-Instanz."
+          }
+        }
+      }
+    },
+    "/api/MapMatching/route": {
+      "post": {
+        "tags": [
+          "MapMatching"
+        ],
+        "summary": "Gleicht eine GPS-Spur auf das Straßennetz ab und liefert die vollständige, gesnappte Route.",
+        "description": "Nutzt Valhalla-Meili (`trace_route`) und liefert die gesnappte Route mit Gesamtlänge (km),\r\ngeschätzter Dauer (s) und den Teilgeometrien (Encoded Polyline je Leg). Optional wird die\r\nGeometrie serverseitig zu Koordinaten dekodiert.",
+        "requestBody": {
+          "description": "Die zu matchende GPS-Spur samt Optionen.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapMatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Map-Matching erfolgreich.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapRouteResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabe (z. B. zu wenige oder ungültige Punkte).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Zugriff verweigert (fehlende Berechtigung).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Die Spur konnte nicht auf das Straßennetz abgeglichen werden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Die Valhalla-Instanz ist nicht erreichbar oder antwortete fehlerhaft."
+          },
+          "504": {
+            "description": "Zeitüberschreitung bei der Anfrage an die Valhalla-Instanz."
+          }
+        }
+      }
+    },
+    "/api/MapMatching/status": {
+      "get": {
+        "tags": [
+          "MapMatching"
+        ],
+        "summary": "Prüft, ob die konfigurierte Valhalla-Instanz erreichbar und einsatzbereit ist.",
+        "description": "Nützlich zur Betriebsüberwachung und um sicherzustellen, dass die Map-Matching-Endpunkte\r\nverwendet werden können, bevor Daten gesendet werden.",
+        "responses": {
+          "200": {
+            "description": "Die Valhalla-Instanz ist erreichbar."
+          },
+          "403": {
+            "description": "Zugriff verweigert (fehlende Berechtigung).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Die Valhalla-Instanz ist derzeit nicht erreichbar."
+          }
+        }
+      }
+    },
+    "/api/RecurringRoutes": {
+      "get": {
+        "tags": [
+          "RecurringRoutes"
+        ],
+        "summary": "Ruft alle wiederholenden Routen ab (paginiert).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von wiederholenden Routen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrequencyRouteResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "RecurringRoutes"
+        ],
+        "summary": "Erstellt eine neue wiederholende Route.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Die neu erstellte Route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrequencyRouteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RecurringRoutes/{id}": {
+      "get": {
+        "tags": [
+          "RecurringRoutes"
+        ],
+        "summary": "Ruft eine spezifische wiederholende Route anhand ihrer ID ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Die angeforderte wiederholende Route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrequencyRouteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "RecurringRoutes"
+        ],
+        "summary": "Aktualisiert eine vorhandene wiederholende Route.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringRouteDTO"
+              },
+              "example": {"frequency":"31.00:00:00","name":"Route 101","description":"Das ist eine Beispielroute","externalReference":"","startDate":"2026-07-31T00:00:00+02:00","endDate":"2027-07-31T00:00:00+02:00","skillsIdList":[1],"color":16711680,"vehicleId":1,"startLatitude":0,"startLongitude":0,"endLatitude":0,"endLongitude":0,"fillShift":false}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Die aktualisierte Route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrequencyRouteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RecurringRoutes"
+        ],
+        "summary": "Löscht eine vorhandene wiederholende Route.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes": {
+      "get": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Ruft aktive Routen ab (paginiert, kompakte Darstellung ohne Jobs/Steps).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von Routen-Zusammenfassungen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteSummaryResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Reicht die Erstellung einer neuen (optimierten) Route ein. Läuft asynchron.",
+        "description": "Antwortet mit `202 Accepted` und einer Job-ID. Der Fortschritt wird über\r\n`GET /api/Routes/jobs/{jobId}` abgefragt; das Ergebnis (die Route) erscheint dort,\r\nsobald der Status `Succeeded` ist.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Optimierung eingereiht; Job-ID zurückgegeben.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationJobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten (Fahrzeug/Skills existieren nicht).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes/{id}": {
+      "get": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Ruft eine spezifische Route inklusive Jobs, Skills, Fahrzeug und Schritten ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Die angeforderte Route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Löscht eine vorhandene Route.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes/{id}/jobs": {
+      "patch": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Reicht das Hinzufügen/Entfernen von Jobs einer Route zur Neuberechnung ein (persistierend).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Optimierung eingereiht.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Route nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes/{id}/preview": {
+      "post": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Reicht eine Vorschau-Neuberechnung mit Job-Änderungen ein (nicht persistierend).",
+        "description": "Bewusst ein POST (keine GET), da eine schwere Berechnung ausgelöst wird.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteJobPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Vorschau-Berechnung eingereiht.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Route nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes/{id}/metadata": {
+      "put": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Reicht eine Metadaten-Änderung samt Neuberechnung der Route ein.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteMetadataDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteMetadataDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteMetadataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Optimierung eingereiht.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Route nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Routes/jobs/{jobId}": {
+      "get": {
+        "tags": [
+          "Routes"
+        ],
+        "summary": "Fragt den Status/das Ergebnis eines eingereihten Optimierungs-Auftrags ab.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aktueller Status (inkl. Ergebnis, sobald erfolgreich).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unbekannte Job-ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Services/RecurringRoutes": {
+      "post": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Materialises all recurring (\"Frequency\") routes that fall due tomorrow into concrete routes.",
+        "description": "Intended to be triggered by a scheduler/cron. Runs the optimisation synchronously per due route\r\nvia the shared SmartRoutingAPI.Services.RouteOptimizationService (no controller is instantiated by hand).",
+        "responses": {
+          "200": {
+            "description": "All due routes were created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RouteResponse"
+                  }
+                }
+              }
+            }
+          },
+          "207": {
+            "description": "Only some routes could be created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RouteResponse"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected failure."
+          }
+        }
+      }
+    },
+    "/api/Skills": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Ruft alle Fähigkeiten ab (paginiert).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von Fähigkeiten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Erstellt eine neue Fähigkeit.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Die neu erstellte Fähigkeit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Skills/{id}": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Ruft eine spezifische Fähigkeit anhand ihrer ID ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Die angeforderte Fähigkeit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Aktualisiert eine vorhandene Fähigkeit.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Die aktualisierte Fähigkeit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Löscht eine vorhandene Fähigkeit.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vehicles": {
+      "get": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Ruft alle Fahrzeuge ab (paginiert).",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "description": "1-basierte Seitennummer. Werte < 1 werden auf 1 normalisiert.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "Elemente pro Seite. Wird hart auf [1, 200] begrenzt.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "description": "Anzahl der zu überspringenden Elemente (für `Skip` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "description": "Anzahl der zu nehmenden Elemente (für `Take` in EF-Abfragen).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seite von Fahrzeugen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponsePagedResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Erstellt ein neues Fahrzeug.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Das neu erstellte Fahrzeug.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vehicles/{id}": {
+      "get": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Ruft ein spezifisches Fahrzeug anhand seiner ID ab.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Das angeforderte Fahrzeug.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Aktualisiert ein vorhandenes Fahrzeug.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Das aktualisierte Fahrzeug.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültige Eingabedaten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Löscht ein vorhandenes Fahrzeug.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich gelöscht."
+          },
+          "404": {
+            "description": "Nicht gefunden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdministrativeRights": {
+        "enum": [
+          "None",
+          "CreateUsers",
+          "EditUsers",
+          "DeleteUsers",
+          "ViewUsers",
+          "ViewUserActivity",
+          "Administrate"
+        ],
+        "type": "string"
+      },
+      "ApplicationRights": {
+        "enum": [
+          "Unknown",
+          "ViewVehicles",
+          "EditVehicles",
+          "ViewRoutes",
+          "EditRoutes",
+          "ViewJobs",
+          "EditJobs",
+          "ViewSkills",
+          "EditSkills",
+          "ViewAdminPanel",
+          "EditAdminPanel",
+          "All"
+        ],
+        "type": "string"
+      },
+      "BulkCreateResultResponse": {
+        "type": "object",
+        "properties": {
+          "createdAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAccountResponse"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ergebnis einer Bulk-Erstellung von Benutzern."
+      },
+      "BulkOperationResultResponse": {
+        "type": "object",
+        "properties": {
+          "successCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ergebnis einer Bulk-Operation (Aktivieren/Deaktivieren/Löschen)."
+      },
+      "ChangePasswordRequest": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "newPassword": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateAccountRequest": {
+        "required": [
+          "administrativeRights",
+          "applicationRights",
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "administrativeRights": {
+            "$ref": "#/components/schemas/AdministrativeRights"
+          },
+          "applicationRights": {
+            "$ref": "#/components/schemas/ApplicationRights"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeliveryDestinationDTO": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "maximumCapacity": {
+            "type": "number",
+            "format": "double"
+          },
+          "skillsIdList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "serviceTimeSeconds": {
+            "maximum": 28800,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Feste Bedienzeit einer Entleerung in Sekunden. `null` übernimmt die globale Vorgabe.",
+            "format": "int32",
+            "nullable": true
+          },
+          "serviceSecondsPerUnit": {
+            "maximum": 3600,
+            "minimum": 0,
+            "type": "number",
+            "description": "Zusätzliche Bedienzeit je abgeladener Kapazitätseinheit in Sekunden.",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeliveryDestinationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Kennung.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Freitext.",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Kennung im Fremdsystem.",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Breitengrad.",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Längengrad.",
+            "format": "double"
+          },
+          "maximumCapacity": {
+            "type": "number",
+            "description": "Aufnahmefähigkeit in Kapazitätseinheiten. Werte kleiner oder gleich 0 bedeuten unbegrenzt.",
+            "format": "double"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            },
+            "description": "Die angenommenen Fraktionen. <b>Leere Liste bedeutet: nimmt alle Fraktionen an.</b>",
+            "nullable": true
+          },
+          "serviceTimeSeconds": {
+            "type": "integer",
+            "description": "Feste Bedienzeit einer Entleerung in Sekunden; `null` bedeutet, dass die globale Vorgabe gilt.",
+            "format": "int32",
+            "nullable": true
+          },
+          "serviceSecondsPerUnit": {
+            "type": "number",
+            "description": "Zusätzliche Bedienzeit je abgeladener Kapazitätseinheit.",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Eine Abladestelle."
+      },
+      "DeliveryDestinationResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryDestinationResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "EditAccountRequest": {
+        "required": [
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "applicationRights": {
+            "$ref": "#/components/schemas/ApplicationRights"
+          },
+          "administrativeRights": {
+            "$ref": "#/components/schemas/AdministrativeRights"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload für die administrative Bearbeitung eines fremden Kontos."
+      },
+      "EditOwnProfileRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 100,
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "firstName": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload für `PUT /api/Accounts/me`. Enthält ausschließlich Stammdaten."
+      },
+      "EmissionsResponse": {
+        "type": "object",
+        "properties": {
+          "co2eGrams": {
+            "type": "number",
+            "description": "Berechnete CO2e-Emissionen in Gramm.",
+            "format": "double",
+            "nullable": true
+          },
+          "collectedUnits": {
+            "type": "number",
+            "description": "Eingesammelte Menge in Kapazitätseinheiten.",
+            "format": "double",
+            "nullable": true
+          },
+          "gramsPerUnit": {
+            "type": "number",
+            "description": "Emissionen je eingesammelte Kapazitätseinheit – die eigentliche Effizienzkennzahl. Nur so ist\r\nein Vergleich zweier Touren mit unterschiedlicher Sammelmenge zulässig.",
+            "format": "double",
+            "nullable": true
+          },
+          "factorSource": {
+            "type": "string",
+            "description": "Quelle der verwendeten Emissionsfaktoren.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Die Emissionsbilanz einer Route."
+      },
+      "FrequencyRouteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "frequency": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "startLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "fillShift": {
+            "type": "boolean"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            },
+            "nullable": true
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/VehicleResponse"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Eine wiederholende (Frequenz-)Route."
+      },
+      "FrequencyRouteResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FrequencyRouteResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "GeoPoint": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "Breitengrad (WGS84).",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Längengrad (WGS84).",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Eine WGS84-Koordinate (dekodierte Geometrie)."
+      },
+      "JobDTO": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "capacity": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "number",
+            "description": "Erwartete Sammelmenge in Kapazitätseinheiten (gleiche Einheit wie Vehicle.Capacity).",
+            "format": "double"
+          },
+          "priority": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Priorität 0–100.",
+            "format": "int32"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number",
+            "format": "double"
+          },
+          "skillId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Die erforderliche Fraktion. Muss eine bestehende Skill-ID sein.",
+            "format": "int32"
+          },
+          "serviceTimeSeconds": {
+            "maximum": 7200,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Bedienzeit dieses Sammelpunkts in Sekunden. `null` übernimmt die globale Vorgabe.",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload zum Anlegen und Aktualisieren eines Sammelpunkts."
+      },
+      "JobResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Kennung.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Freitext, üblicherweise Adresse und Zusatz.",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Kennung im Fremdsystem. Der nächtliche Import gleicht ausschließlich hierüber ab.",
+            "nullable": true
+          },
+          "capacity": {
+            "type": "number",
+            "description": "Erwartete Sammelmenge in Kapazitätseinheiten.",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Breitengrad.",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Längengrad.",
+            "format": "double"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Priorität 0–100. Werte bis `MinimumPriorityFactor * 100` (Vorgabe 25) sind wirkungsgleich.",
+            "format": "int32"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillResponse"
+          },
+          "serviceTimeSeconds": {
+            "type": "integer",
+            "description": "Bedienzeit in Sekunden; `null` bedeutet, dass die globale Vorgabe gilt.",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ein Sammelpunkt (Glascontainer-Standort)."
+      },
+      "JobResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "LoginRequest": {
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MapMatchRequest": {
+        "required": [
+          "points"
+        ],
+        "type": "object",
+        "properties": {
+          "points": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TracePoint"
+            },
+            "description": "Die zu matchenden GPS-Punkte in chronologischer Reihenfolge. Mindestens 2 Punkte erforderlich."
+          },
+          "costing": {
+            "type": "string",
+            "description": "Kostenmodell (Fortbewegungsart) für das Matching. Standard: \"auto\".\r\nZulässig u. a.: auto, auto_shorter, truck, bus, taxi, bicycle, pedestrian, motorcycle, motor_scooter.",
+            "nullable": true
+          },
+          "shapeMatch": {
+            "type": "string",
+            "description": "Matching-Algorithmus. Standard: \"map_snap\".\r\n<list type=\"bullet\"><item><description>`map_snap`: Vollständiges HMM-Map-Matching. Für echte (verrauschte) GPS-Daten empfohlen.</description></item><item><description>`edge_walk`: Nur für Spuren, die bereits aus einer Valhalla-Route stammen.</description></item><item><description>`walk_or_snap`: Versucht edge_walk und fällt bei Bedarf auf map_snap zurück.</description></item></list>\r\nHinweis: Die pro-Punkt-Zuordnung (SmartRoutingAPI.Models.Misc.MapMatchResult.MatchedPoints) wird nur bei\r\n`map_snap` zuverlässig befüllt – daher der Standardwert.",
+            "nullable": true
+          },
+          "searchRadius": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Suchradius in Metern, in dem pro Messpunkt nach Straßenkandidaten gesucht wird.\r\nZulässiger Bereich laut Valhalla: 0–100 m. Werte werden serverseitig begrenzt.",
+            "format": "int32",
+            "nullable": true
+          },
+          "gpsAccuracy": {
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "number",
+            "description": "Angenommene GPS-Genauigkeit in Metern. Steuert, wie stark Messrauschen erwartet wird.",
+            "format": "double",
+            "nullable": true
+          },
+          "turnPenaltyFactor": {
+            "maximum": 100000,
+            "minimum": 0,
+            "type": "number",
+            "description": "Straffaktor für Abbiegevorgänge. Höhere Werte (z. B. 500) glätten \"hin-und-her\"-Sprünge bei\r\ndichten, verrauschten Fußgänger-Traces. Bei bereits guter GPS-Qualität eher niedrig lassen.",
+            "format": "double",
+            "nullable": true
+          },
+          "includeEdges": {
+            "type": "boolean",
+            "description": "Wenn `true`, werden zusätzlich die Straßensegment-Attribute (Name, Tempo, Straßenklasse …)\r\nzurückgegeben. Standard `false`, um die Antwortgröße bei Live-Matching klein zu halten."
+          },
+          "decodeGeometry": {
+            "type": "boolean",
+            "description": "Wenn `true`, wird die kodierte Polyline zusätzlich serverseitig in eine Liste von\r\nKoordinaten dekodiert (SmartRoutingAPI.Models.Misc.MapMatchResult.Geometry). Standard `false`\r\n(nur die kompakte Encoded Polyline wird geliefert)."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Anfrage zum Live-Map-Matching einer GPS-Spur gegen das Straßennetz der Valhalla-Instanz."
+      },
+      "MapMatchResult": {
+        "type": "object",
+        "properties": {
+          "inputPointCount": {
+            "type": "integer",
+            "description": "Anzahl der übermittelten Eingabepunkte.",
+            "format": "int32"
+          },
+          "matchedPointCount": {
+            "type": "integer",
+            "description": "Anzahl der zurückgegebenen gematchten Punkte.",
+            "format": "int32"
+          },
+          "shape": {
+            "type": "string",
+            "description": "Die auf das Straßennetz abgeglichene Gesamtgeometrie als Encoded Polyline (Präzision 1e-6).",
+            "nullable": true
+          },
+          "geometry": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeoPoint"
+            },
+            "description": "Dekodierte Geometrie als Koordinatenliste. Nur befüllt, wenn\r\nSmartRoutingAPI.Models.Misc.MapMatchRequest.DecodeGeometry gesetzt ist.",
+            "nullable": true
+          },
+          "matchedPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchedPoint"
+            },
+            "description": "Die pro Eingabepunkt gematchten Positionen (1:1-Zuordnung).",
+            "nullable": true
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchedEdge"
+            },
+            "description": "Attribute der durchlaufenen Straßensegmente. Nur befüllt, wenn\r\nSmartRoutingAPI.Models.Misc.MapMatchRequest.IncludeEdges gesetzt ist.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ergebnis eines Live-Map-Matchings (Valhalla-Meili `trace_attributes`)."
+      },
+      "MapRouteResult": {
+        "type": "object",
+        "properties": {
+          "lengthKm": {
+            "type": "number",
+            "description": "Gesamtlänge der gesnappten Route in Kilometern.",
+            "format": "double"
+          },
+          "timeSeconds": {
+            "type": "number",
+            "description": "Geschätzte Gesamtdauer der Route in Sekunden.",
+            "format": "double"
+          },
+          "legShapes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Die Encoded Polyline (Präzision 1e-6) je Teilabschnitt (Leg) der gesnappten Route.",
+            "nullable": true
+          },
+          "geometry": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeoPoint"
+            },
+            "description": "Dekodierte Gesamtgeometrie als Koordinatenliste. Nur befüllt, wenn\r\nSmartRoutingAPI.Models.Misc.MapMatchRequest.DecodeGeometry gesetzt ist.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ergebnis eines Map-Matchings mit vollständiger Routen-Rückgabe (Valhalla-Meili `trace_route`)."
+      },
+      "MatchedEdge": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Straßennamen dieses Segments (sofern vorhanden).",
+            "nullable": true
+          },
+          "wayId": {
+            "type": "integer",
+            "description": "OpenStreetMap-Way-ID dieses Segments.",
+            "format": "int64",
+            "nullable": true
+          },
+          "length": {
+            "type": "number",
+            "description": "Länge des Segments in Kilometern.",
+            "format": "double",
+            "nullable": true
+          },
+          "speed": {
+            "type": "number",
+            "description": "Fahrgeschwindigkeit laut Routing-Modell (km/h).",
+            "format": "double",
+            "nullable": true
+          },
+          "speedLimit": {
+            "type": "number",
+            "description": "Zulässige Höchstgeschwindigkeit (km/h), sofern bekannt.",
+            "format": "double",
+            "nullable": true
+          },
+          "roadClass": {
+            "type": "string",
+            "description": "Straßenklasse (motorway, trunk, primary, …).",
+            "nullable": true
+          },
+          "use": {
+            "type": "string",
+            "description": "Nutzungsart der Kante (road, ramp, driveway, …).",
+            "nullable": true
+          },
+          "beginShapeIndex": {
+            "type": "integer",
+            "description": "Startindex dieses Segments in der Gesamtgeometrie (Shape).",
+            "format": "int32",
+            "nullable": true
+          },
+          "endShapeIndex": {
+            "type": "integer",
+            "description": "Endindex dieses Segments in der Gesamtgeometrie (Shape).",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Attribute eines auf das Straßennetz abgeglichenen Kantensegments (optional, siehe\r\nSmartRoutingAPI.Models.Misc.MapMatchRequest.IncludeEdges)."
+      },
+      "MatchedPoint": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "Breitengrad des auf die Straße \"gesnappten\" Punktes.",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Längengrad des auf die Straße \"gesnappten\" Punktes.",
+            "format": "double"
+          },
+          "type": {
+            "type": "string",
+            "description": "Match-Typ: \"matched\" (direkt zugeordnet), \"interpolated\" (zwischen Kanten interpoliert)\r\noder \"unmatched\" (keine Zuordnung möglich).",
+            "nullable": true
+          },
+          "edgeIndex": {
+            "type": "integer",
+            "description": "Index der zugehörigen Kante in SmartRoutingAPI.Models.Misc.MapMatchResult.Edges. Null, wenn der Punkt\r\nnicht zugeordnet werden konnte.",
+            "format": "int32",
+            "nullable": true
+          },
+          "distanceAlongEdge": {
+            "type": "number",
+            "description": "Relative Position entlang der zugeordneten Kante (0.0 = Anfang, 1.0 = Ende).",
+            "format": "double",
+            "nullable": true
+          },
+          "distanceFromTracePoint": {
+            "type": "number",
+            "description": "Abstand in Metern zwischen dem ursprünglichen GPS-Punkt und dem gematchten Punkt.\r\nEin guter Indikator für die Match-Qualität pro Punkt.",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Das Ergebnis eines einzelnen auf das Straßennetz abgeglichenen GPS-Punktes.\r\nEs besteht eine 1:1-Zuordnung zur Reihenfolge der Eingabepunkte."
+      },
+      "OptimizationJobResponse": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OptimizationStatus"
+          },
+          "result": {
+            "$ref": "#/components/schemas/RouteResponse"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Rückgabe für eingereihte Routen-Optimierungen. Schreib-Endpunkte antworten mit\r\n`202 Accepted` und dieser Hülle; der Client pollt anschließend\r\n`GET /api/Routes/jobs/{jobId}`, bis SmartRoutingAPI.Contracts.OptimizationJobResponse.Status terminal ist (§4.4)."
+      },
+      "OptimizationStatus": {
+        "enum": [
+          "Queued",
+          "Running",
+          "Succeeded",
+          "Failed"
+        ],
+        "type": "string",
+        "description": "Der Status eines asynchronen Optimierungs-Auftrags."
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RecurringRouteDTO": {
+        "required": [
+          "name",
+          "skillsIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "skillsIdList": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Die IDs der Skills dieser Route. Muss mindestens einen Eintrag enthalten."
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehicleId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "startLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "startLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "fillShift": {
+            "type": "boolean",
+            "description": "Wenn `true`, wird die Schicht bewusst möglichst vollständig ausgefüllt: Nach einer\r\nZwischenentleerung fährt das Fahrzeug weiter und sammelt, solange das Schichtfenster reicht.\r\nWenn `false` (Vorgabe), wird ein Sammelpunkt nur angefahren, wenn sein Nutzen die\r\ndadurch zusätzlich verursachten Emissionen übersteigt."
+          },
+          "frequency": {
+            "$ref": "#/components/schemas/TimeSpan"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload zum Erstellen/Aktualisieren einer wiederholenden (Frequenz-)Route."
+      },
+      "RouteDTO": {
+        "required": [
+          "name",
+          "skillsIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "skillsIdList": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Die IDs der Skills dieser Route. Muss mindestens einen Eintrag enthalten."
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehicleId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "startLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "startLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "fillShift": {
+            "type": "boolean",
+            "description": "Wenn `true`, wird die Schicht bewusst möglichst vollständig ausgefüllt: Nach einer\r\nZwischenentleerung fährt das Fahrzeug weiter und sammelt, solange das Schichtfenster reicht.\r\nWenn `false` (Vorgabe), wird ein Sammelpunkt nur angefahren, wenn sein Nutzen die\r\ndadurch zusätzlich verursachten Emissionen übersteigt."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload zum Erstellen/Berechnen einer konkreten Route."
+      },
+      "RouteJobPatch": {
+        "type": "object",
+        "properties": {
+          "addJobIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "removeJobIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Typisierter Body zum Hinzufügen/Entfernen von Jobs einer Route. Ersetzt die zuvor als\r\nkomma-getrennte Query-Strings übergebenen IDs (§3.5 B5 / §4.7)."
+      },
+      "RouteMetadataDTO": {
+        "required": [
+          "name",
+          "skillsIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "startLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "endLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "vehicleId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillsIdList": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "fillShift": {
+            "type": "boolean",
+            "description": "Wenn `true`, wird die Schicht bewusst möglichst vollständig ausgefüllt. Wenn\r\n`false` (Vorgabe), wird ausschließlich nach Emissionseffizienz geplant."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload zum Ändern der Metadaten einer Route (mit anschließender Neuberechnung)."
+      },
+      "RouteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Kennung.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Freitext.",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Kennung im Fremdsystem.",
+            "nullable": true
+          },
+          "color": {
+            "type": "integer",
+            "description": "RGBA-Farbe (0xRRGGBBAA).",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Beginn des Schichtfensters.",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Ende des Schichtfensters.",
+            "format": "date-time"
+          },
+          "startLatitude": {
+            "type": "number",
+            "description": "Breitengrad des Startpunkts.",
+            "format": "double"
+          },
+          "startLongitude": {
+            "type": "number",
+            "description": "Längengrad des Startpunkts.",
+            "format": "double"
+          },
+          "endLatitude": {
+            "type": "number",
+            "description": "Breitengrad des Zielpunkts.",
+            "format": "double"
+          },
+          "endLongitude": {
+            "type": "number",
+            "description": "Längengrad des Zielpunkts.",
+            "format": "double"
+          },
+          "geometry": {
+            "type": "string",
+            "description": "Die gefahrene Strecke als Encoded Polyline, Präzision 1e-6.",
+            "nullable": true
+          },
+          "meters": {
+            "type": "integer",
+            "description": "Gefahrene Strecke in Metern.",
+            "format": "int32",
+            "nullable": true
+          },
+          "service": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "fillShift": {
+            "type": "boolean",
+            "description": "Ob die Schicht bewusst ausgefüllt wurde."
+          },
+          "emissions": {
+            "$ref": "#/components/schemas/EmissionsResponse"
+          },
+          "jobOrder": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Die bedienten Sammelpunkte in Fahrtreihenfolge. <b>Abgeleitet</b> aus Steps\r\nund nicht mehr separat gespeichert.",
+            "nullable": true
+          },
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobResponse"
+            },
+            "description": "Die bedienten Sammelpunkte (ungeordnet; Reihenfolge siehe JobOrder/Steps).",
+            "nullable": true
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            },
+            "description": "Die Fraktionen der Route.",
+            "nullable": true
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/VehicleResponse"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepResponse"
+            },
+            "description": "Die Halte in Fahrtreihenfolge, inklusive Start, Entleerungen und Ende.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Eine vollständige Route inklusive Sammelpunkten, Fraktionen, Fahrzeug und Halten."
+      },
+      "RouteSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "jobCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stepCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "meters": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "duration": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "fillShift": {
+            "type": "boolean"
+          },
+          "co2eGrams": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "vehicleId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Kompakte Routen-Darstellung für Listen-Endpunkte (ohne Sammelpunkte und Halte)."
+      },
+      "RouteSummaryResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RouteSummaryResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "SkillRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SkillResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Kennung.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename, z. B. „Weißglas“.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Freitext.",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Kennung im Fremdsystem.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Eine Fraktion bzw. Fähigkeit in flacher Form – ohne Rück-Navigationen."
+      },
+      "SkillResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "StepResponse": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "description": "Position in der Fahrtreihenfolge, beginnend bei 0.",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/StepType"
+          },
+          "jobId": {
+            "type": "integer",
+            "description": "Der bediente Sammelpunkt; nur bei `Collection` gesetzt.",
+            "format": "int32",
+            "nullable": true
+          },
+          "deliveryDestinationId": {
+            "type": "integer",
+            "description": "Die genutzte Abladestelle; nur bei `Disposal` gesetzt.",
+            "format": "int32",
+            "nullable": true
+          },
+          "arrival": {
+            "type": "string",
+            "description": "Geplanter Ankunftszeitpunkt.",
+            "format": "date-time"
+          },
+          "travelTimeFromStart": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "serviceTime": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "distanceFromStartMeters": {
+            "type": "integer",
+            "description": "Aufsummierte Fahrstrecke vom Schichtstart in Metern.",
+            "format": "int32"
+          },
+          "loadUnitsAfter": {
+            "type": "number",
+            "description": "Ladung <em>nach</em> diesem Halt in echten Kapazitätseinheiten (z. B. `2.4`). An einer\r\nAbladestelle stets `0`.",
+            "format": "double"
+          },
+          "description": {
+            "type": "string",
+            "description": "Anzeigename des Halts.",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Breitengrad.",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Längengrad.",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ein einzelner Halt einer berechneten Route."
+      },
+      "StepType": {
+        "enum": [
+          "Start",
+          "Collection",
+          "Disposal",
+          "End"
+        ],
+        "type": "string",
+        "description": "Die Art eines Halts einer berechneten Route."
+      },
+      "TimeSpan": {
+        "type": "object",
+        "properties": {
+          "ticks": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "milliseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "microseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "nanoseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "totalDays": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalHours": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMilliseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMicroseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalNanoseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMinutes": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalSeconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Antwort des Login-Endpunkts."
+      },
+      "TracePoint": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number",
+            "description": "Breitengrad des GPS-Punktes (WGS84). Gültiger Bereich: -90 bis 90.",
+            "format": "double"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number",
+            "description": "Längengrad des GPS-Punktes (WGS84). Gültiger Bereich: -180 bis 180.",
+            "format": "double"
+          },
+          "time": {
+            "type": "number",
+            "description": "Optionaler Zeitstempel des Punktes in Sekunden (Unix-Zeit oder relativ zum Trace-Start).\r\nWird dringend empfohlen: Meili kann mit Zeitinformationen Geschwindigkeiten plausibilisieren\r\nund liefert dadurch deutlich präzisere Ergebnisse als bei reinen Positionsdaten.",
+            "format": "double",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "Optionaler Wegpunkt-Typ für die Behandlung durch die Engine:\r\n\"break\", \"via\", \"through\" oder \"break_through\". Ohne Angabe entscheidet Valhalla automatisch.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ein einzelner GPS-Punkt einer Positions-Spur (Trace), der über die Valhalla-Meili-Engine\r\nauf das Straßennetz abgeglichen (\"map-matched\") werden soll."
+      },
+      "UserAccountResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastLogin": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "applicationRights": {
+            "type": "string",
+            "nullable": true
+          },
+          "administrativeRights": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ein Benutzerkonto – ohne `PasswordHash`, strukturell ausgeschlossen."
+      },
+      "UserAccountResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAccountResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      },
+      "UserPermissionsResponse": {
+        "type": "object",
+        "properties": {
+          "administrativeRights": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationRights": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Die aufgelösten Rechte eines Benutzers."
+      },
+      "UserStatisticsResponse": {
+        "type": "object",
+        "properties": {
+          "totalUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "inactiveUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recentlyCreatedUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usersByAdministrativeRights": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "usersByApplicationRights": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Benutzer-Statistiken."
+      },
+      "VehicleData": {
+        "required": [
+          "name",
+          "skillIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "externalReference": {
+            "maxLength": 512,
+            "type": "string",
+            "nullable": true
+          },
+          "capacity": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "number",
+            "description": "Nutzlast in Kapazitätseinheiten – dieselbe Einheit wie `Job.Capacity`.",
+            "format": "double"
+          },
+          "skillIdList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehicleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Kennung.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Freitext.",
+            "nullable": true
+          },
+          "externalReference": {
+            "type": "string",
+            "description": "Kennung im Fremdsystem.",
+            "nullable": true
+          },
+          "capacity": {
+            "type": "number",
+            "description": "Nutzlast in Kapazitätseinheiten. <b>Geändert von `long` auf `double`</b>, damit\r\nFahrzeugnutzlast und Sammelmenge denselben Zahlentyp und dieselbe Einheit verwenden.",
+            "format": "double"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            },
+            "description": "Die Fraktionen, die dieses Fahrzeug sammeln darf.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Ein Fahrzeug samt seiner Fraktionen."
+      },
+      "VehicleResponsePagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleResponse"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Gesamtzahl der Seiten für die aktuelle Seitengröße.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine weitere Seite existiert.",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Gibt an, ob eine vorherige Seite existiert.",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Einheitliche Hülle für paginierte Antworten. Der gesamte Payload-Vertrag der Listen-Endpunkte."
+      }
+    }
+  }
+}
